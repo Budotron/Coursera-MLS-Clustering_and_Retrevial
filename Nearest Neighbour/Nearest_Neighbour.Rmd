@@ -1,0 +1,44 @@
+---
+title: "Choosing features and metrics for nearest neighbor search"
+author: "Varun Boodram"
+date: "July 8, 2016"
+output:
+  html_document:
+    theme: cerulean
+  pdf_document: default
+---
+
+When exploring a large set of documents -- such as Wikipedia, news articles, StackOverflow, etc. -- it can be useful to get a list of related material. To find relevant documents you typically
+
+* Decide on a notion of similarity
+* Find the documents that are most similar
+
+In the assignment you will
+
+* Gain intuition for different notions of similarity and practice finding similar documents.
+* Explore the tradeoffs with representing documents using raw word counts and TF-IDF
+* Explore the behavior of different distance metrics by looking at the Wikipedia pages most similar to President Obama’s page.
+
+```{r}
+# loading the data
+setwd("~/Desktop/Coursera-MLS-Clustering_and_Retrevial")
+wiki <- read.csv2(file = unzip(
+        "./datasets/people_wiki.csv.zip"),
+                  header = T, 
+                  sep = ",")
+```
+
+Next, we extract word count vectors
+
+```{r}
+require(tm)
+train_corpus <- VCorpus(VectorSource(wiki$text))
+train_matrix <- DocumentTermMatrix(train_corpus, 
+                                   control = list(stopwords = FALSE,
+                                                  wordLengths =c(1, Inf),
+                                                  removePunctuation =T))
+m <- removeSparseTerms(x = train_matrix, sparse = .999)
+m2<-as.matrix(inspect(m))
+tdm <- as.matrix(inspect(train_matrix))
+```
+
